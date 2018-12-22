@@ -27,7 +27,8 @@ COPY nginx.conf /etc/nginx/nginx.conf
 COPY php.ini /usr/local/etc/php/
 COPY hhvm.ini /etc/hhvm/hhvm.ini
 COPY supervisord.conf /etc/supervisord.conf
-COPY jobrunner /jobrunner
+
+RUN git clone https://github.com/wikimedia/mediawiki-services-jobrunner.git /jobrunner
 
 RUN mkdir -p /home/52poke \
 	&& cd /home/52poke \
@@ -35,7 +36,8 @@ RUN mkdir -p /home/52poke \
 
 RUN curl https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
 	&& cd /home/52poke/wiki/extensions/Elastica && composer install --no-dev \
-	&& cd /home/52poke/wiki/extensions/CirrusSearch && composer install --no-dev
+	&& cd /home/52poke/wiki/extensions/CirrusSearch && composer install --no-dev \
+	&& cd /home/52poke/wiki/extensions/AWS && composer install --no-dev
 
 EXPOSE 80
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
