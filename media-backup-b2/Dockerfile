@@ -1,4 +1,7 @@
-FROM oddmouse/rclone
+FROM debian:stretch-slim
+
+RUN apt-get update && apt-get install -y zip curl man-db
+RUN curl https://rclone.org/install.sh | bash
 
 COPY entrypoint.sh /entrypoint.sh
 
