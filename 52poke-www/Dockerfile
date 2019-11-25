@@ -1,7 +1,10 @@
 FROM php:fpm-alpine
 
-RUN apk update && apk add --update --no-cache libpng-dev libjpeg-turbo-dev sqlite-dev libxml2-dev \
+RUN apk update && apk add --update --no-cache libpng-dev libjpeg-turbo-dev sqlite-dev libxml2-dev freetype-dev \
         nginx supervisor
+
+RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ --with-png-dir=/usr/include/
+
 RUN docker-php-ext-install bcmath exif gd \
         iconv \
         mysqli pdo_mysql \
