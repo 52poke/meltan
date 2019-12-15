@@ -20,13 +20,14 @@ COPY supervisord.conf /etc/supervisord.conf
 
 RUN mkdir -p /home/52poke \
     && cd /home/52poke \
-    && git clone --recurse-submodules -b 52w https://github.com/mudkipme/mediawiki.git wiki
+    && git clone --depth 1 --recurse-submodules --shallow-submodules -b 52w https://github.com/mudkipme/mediawiki.git wiki
 
 RUN curl https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && cd /home/52poke/wiki/extensions/Elastica && composer install --no-dev \
     && cd /home/52poke/wiki/extensions/CirrusSearch && composer install --no-dev \
     && cd /home/52poke/wiki/extensions/AWS && composer install --no-dev \
-    && cd /home/52poke/wiki/extensions/EventBus && composer install --no-dev
+    && cd /home/52poke/wiki/extensions/EventBus && composer install --no-dev \
+    && cd /home/52poke/wiki && composer require nmred/kafka-php:0.1.5 --update-no-dev 
 
 RUN chown -R www-data:www-data /home/52poke/wiki
 
