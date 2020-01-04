@@ -13,4 +13,4 @@ echo "access_key_id = $(cat /run/secrets/aws_access_key)" >> /root/.config/rclon
 echo "secret_access_key = $(cat /run/secrets/aws_secret)" >> /root/.config/rclone/rclone.conf
 echo "region = ap-northeast-1" >> /root/.config/rclone/rclone.conf
 
-rclone sync --exclude wiki/thumb/** --exclude wiki/temp/** s3:media.52poke.com b2:52poke-backup/static/media
+rclone sync --exclude wiki/thumb/** --exclude wiki/temp/** --exclude webp-cache/** s3:media.52poke.com b2:52poke-backup/static/media
