@@ -1,17 +1,20 @@
 #!/bin/sh
 
-echo '[mysqldump]' > /root/.my.cnf
-echo 'user=root' >> /root/.my.cnf
-echo "password=$(cat /run/secrets/mysql_root)" >> /root/.my.cnf
+set -e
 
-mkdir -p /root/.config/rclone/
-echo '[b2]' > /root/.config/rclone/rclone.conf
-echo 'type = b2' >> /root/.config/rclone/rclone.conf
-echo "account = $(cat /run/secrets/b2_account)" >> /root/.config/rclone/rclone.conf
-echo "key = $(cat /run/secrets/b2_key)" >> /root/.config/rclone/rclone.conf
+echo '[client]' > /root/.my.cnf
+echo 'user=root' >> /root/.my.cnf
+echo "password=$MYSQL_ROOT_PASSWORD" >> /root/.my.cnf
+echo '[mysqldump]' >> /root/.my.cnf
+echo 'user=root' >> /root/.my.cnf
+echo "password=$MYSQL_ROOT_PASSWORD" >> /root/.my.cnf
 
 mkdir -p /root/backup/database/
-mysqldump -h mysql -u root 52poke | gzip > /root/backup/database/52poke.sql.gz && \
-mysqldump -h mysql -u root 52poke_bbs | gzip > /root/backup/database/52poke_bbs.sql.gz && \
-mysqldump -h mysql -u root --ignore-table=52poke_wiki.objectcache 52poke_wiki | gzip > /root/backup/database/52poke_wiki.sql.gz && \
-rclone copy /root/backup/database b2:52poke-backup/database
+
+databases=`mysql -h $MYSQL_HOST -u root -e "SHOW DATABASES;" | grep -Ev "(Database|information_schema|performance_schema)"`
+
+for db in $databases; do
+  mysqldump -h $MYSQL_HOST -u root $MYSQLDUMP_OPT $db | gzip > /root/backup/database/$db.sql.gz
+done
+
+rclone copy /root/backup/database b2:$B2_TARGET
