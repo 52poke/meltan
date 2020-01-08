@@ -1,4 +1,4 @@
-FROM php:fpm-alpine
+FROM php:7.2-fpm-alpine
 
 RUN apk update && apk add --update --no-cache libpng-dev libjpeg-turbo-dev sqlite-dev libxml2-dev freetype-dev \
         nginx supervisor
