@@ -1,10 +1,9 @@
-FROM bitnami/mongodb
+FROM postgres
 
 ENV BACKUP_TARGET mudkip-backup-web/database
 ENV RCLONE_CONFIG_BACKUP_TYPE b2
-ENV MONGO_HOST mongodb
+ENV POSTGRES_HOST postgres
 
-USER root
 RUN apt-get update && apt-get install -y zip curl man-db
 RUN curl https://rclone.org/install.sh | bash
 

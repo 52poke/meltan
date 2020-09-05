@@ -1,17 +1,18 @@
-#!/bin/sh
+#!/bin/bash
 
-mkdir -p /root/.config/rclone/
-echo '[b2]' > /root/.config/rclone/rclone.conf
-echo 'type = b2' >> /root/.config/rclone/rclone.conf
-echo "account = $(cat /run/secrets/b2_account)" >> /root/.config/rclone/rclone.conf
-echo "key = $(cat /run/secrets/b2_key)" >> /root/.config/rclone/rclone.conf
+set -e
 
 mkdir -p /root/backup/database/
 cd /root/backup/database/
-mongodump --host mongo -d paradise --username paradise --password $(cat /run/secrets/mongodb_paradise) --out .
-mongodump --host mongo -d forums --username forums --password $(cat /run/secrets/mongodb_forums) --out .
-tar czf paradise.tar.gz paradise
-tar czf forums.tar.gz forums
-rm -rf paradise
-rm -rf forums
-rclone copy /root/backup/database b2:52poke-backup/database
+
+databases=`mongo --quiet --host $MONGO_HOST --username root --password $MONGO_ROOT_PASSWORD --eval "db.getMongo().getDBNames()" | grep '"' | tr -d '\[\]",' `
+
+for db in $databases; do
+  mongodump --host $MONGO_HOST -d $db --username root --password $MONGO_ROOT_PASSWORD --authenticationDatabase admin --out .
+  if [ -d "$db" ]; then
+    tar czf $db.tar.gz $db
+    rm -rf $db
+  fi
+done
+
+rclone copy /root/backup/database backup:$BACKUP_TARGET
