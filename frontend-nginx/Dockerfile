@@ -1,8 +1,7 @@
-FROM debian:stretch-slim
+FROM debian:buster-slim
 
-RUN echo "deb http://ftp.debian.org/debian stretch-backports main" >> /etc/apt/sources.list.d/backports.list \
-    && apt-get update \
-    && apt-get install -t stretch-backports -y nginx libnginx-mod-http-cache-purge
+RUN apt-get update \
+    && apt-get install -y nginx libnginx-mod-http-cache-purge
 
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log
