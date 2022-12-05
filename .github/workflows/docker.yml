@@ -50,3 +50,12 @@ jobs:
         push: true
         tags: |
           ghcr.io/${{ github.repository_owner }}/postgres-backup:latest
+    - name: Build and push 52w-nginx
+      uses: docker/build-push-action@v2
+      with:
+        context: ./52w-nginx
+        file: ./52w-nginx/Dockerfile
+        platforms: linux/amd64
+        push: true
+        tags: |
+          ghcr.io/${{ github.repository_owner }}/52w-nginx:latest
