@@ -1,4 +1,4 @@
-FROM mysql
+FROM mariadb:10.9
 
 ENV B2_TARGET mudkip-backup-web/database
 ENV RCLONE_CONFIG_B2_TYPE b2

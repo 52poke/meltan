@@ -59,3 +59,12 @@ jobs:
         push: true
         tags: |
           ghcr.io/${{ github.repository_owner }}/52w-nginx:latest
+    - name: Build and push mariadb-backup-b2
+      uses: docker/build-push-action@v2
+      with:
+        context: ./mariadb-backup-b2
+        file: ./mariadb-backup-b2/Dockerfile
+        platforms: linux/amd64
+        push: true
+        tags: |
+          ghcr.io/${{ github.repository_owner }}/mariadb-backup-b2:latest
