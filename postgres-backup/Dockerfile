@@ -1,4 +1,4 @@
-FROM postgres:14
+FROM postgres:15
 
 ENV BACKUP_TARGET mudkip-backup-web/database
 ENV RCLONE_CONFIG_BACKUP_TYPE b2
