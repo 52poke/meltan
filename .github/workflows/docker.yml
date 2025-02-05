@@ -10,48 +10,33 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        submodules: recursive
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v1
+      uses: actions/checkout@v4
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+      uses: docker/setup-buildx-action@v3
     - name: Login to GitHub Container Registry
-      uses: docker/login-action@v1
+      uses: docker/login-action@v3
       with:
         registry: ghcr.io
         username: ${{ github.repository_owner }}
         password: ${{ secrets.CR_PAT }}
     - name: Build and push 52w-elasticsearch
-      uses: docker/build-push-action@v2
+      uses: docker/build-push-action@v6
       with:
         context: ./52w-elasticsearch
         file: ./52w-elasticsearch/Dockerfile
-        platforms: linux/amd64
         push: true
         tags: |
           ghcr.io/${{ github.repository_owner }}/52w-elasticsearch:latest
     - name: Build and push poolcounter
-      uses: docker/build-push-action@v2
+      uses: docker/build-push-action@v6
       with:
         context: ./poolcounter
         file: ./poolcounter/Dockerfile
-        platforms: linux/amd64,linux/arm64
         push: true
         tags: |
           ghcr.io/${{ github.repository_owner }}/poolcounter:latest
-    - name: Build and push postgres-backup
-      uses: docker/build-push-action@v2
-      with:
-        context: ./postgres-backup
-        file: ./postgres-backup/Dockerfile
-        platforms: linux/amd64
-        push: true
-        tags: |
-          ghcr.io/${{ github.repository_owner }}/postgres-backup:latest
     - name: Build and push 52w-nginx
-      uses: docker/build-push-action@v2
+      uses: docker/build-push-action@v6
       with:
         context: ./52w-nginx
         file: ./52w-nginx/Dockerfile
@@ -59,12 +44,3 @@ jobs:
         push: true
         tags: |
           ghcr.io/${{ github.repository_owner }}/52w-nginx:latest
-    - name: Build and push mariadb-backup-b2
-      uses: docker/build-push-action@v2
-      with:
-        context: ./mariadb-backup-b2
-        file: ./mariadb-backup-b2/Dockerfile
-        platforms: linux/amd64
-        push: true
-        tags: |
-          ghcr.io/${{ github.repository_owner }}/mariadb-backup-b2:latest
